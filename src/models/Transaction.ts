@@ -1,6 +1,6 @@
 import { uuid } from 'uuidv4';
 
-class Transaction {
+export class Transaction {
   id: string;
 
   title: string;
@@ -16,5 +16,3 @@ class Transaction {
     this.type = type;
   }
 }
-
-export default Transaction;
