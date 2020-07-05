@@ -15,9 +15,9 @@ export class CreateTransactionService {
   public execute({ title, type, value }: RequestDTO): Transaction {
     const isOutcome = type === 'outcome';
     const hasEnoughMoney =
-      this.transactionsRepository.getBalance().total - value > 0;
+      this.transactionsRepository.getBalance().total < value;
 
-    if (isOutcome && !hasEnoughMoney) {
+    if (isOutcome && hasEnoughMoney) {
       throw Error('Arruma dinheiro carai');
     }
 
