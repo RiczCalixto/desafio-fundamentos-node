@@ -29,8 +29,20 @@ export class TransactionsRepository {
   }
 
   public getBalance(): Balance {
-    const income = this.sumValues('income');
-    const outcome = this.sumValues('outcome');
+    const { income, outcome } = this.transactions.reduce(
+      (accumulator: Omit<Balance, 'total'>, transaction: Transaction) => {
+        const transactionType = {
+          income: () => (accumulator.income += transaction.value),
+          outcome: () => (accumulator.outcome += transaction.value),
+        };
+        transactionType[transaction.type]();
+        return accumulator;
+      },
+      {
+        income: 0,
+        outcome: 0,
+      },
+    );
     const total = income - outcome;
     return { income, outcome, total };
   }
@@ -40,13 +52,5 @@ export class TransactionsRepository {
     this.transactions.push(transaction);
 
     return transaction;
-  }
-
-  private sumValues(incomeOrOutcome: 'income' | 'outcome'): number {
-    return this.transactions.reduce(
-      (acc, currentValue) =>
-        currentValue.type === incomeOrOutcome ? acc + currentValue.value : acc,
-      0,
-    );
   }
 }
