@@ -16,10 +16,11 @@ export class CreateTransactionService {
     const isOutcome = type === 'outcome';
     const hasEnoughMoney =
       this.transactionsRepository.getBalance().total < value;
+    const isValidType = ['income', 'outcome'].includes(type);
 
-    if (isOutcome && hasEnoughMoney) {
-      throw Error('Arruma dinheiro carai');
-    }
+    if (!isValidType) throw Error('Invalid type.');
+
+    if (isOutcome && hasEnoughMoney) throw Error('Not enough money.');
 
     return this.transactionsRepository.create({
       title,
